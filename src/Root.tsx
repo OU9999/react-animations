@@ -13,15 +13,14 @@ const Wrapper = styled(motion.div)`
   height: 100vh;
   width: 100vw;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
-  flex-direction: column;
   background-color: pink;
 `;
 
 const Box = styled(motion.div)`
-  width: 50px;
-  height: 50px;
+  width: 200px;
+  height: 200px;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 10px;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.6);
@@ -29,63 +28,32 @@ const Box = styled(motion.div)`
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  font-size: 28px;
-  margin-bottom: 10px;
-  position: absolute;
-  top: 100px;
+`;
+const Circle = styled(motion.div)`
+  background-color: #00a5ff;
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.6);
 `;
 
-const boxVar: Variants = {
-  entry: (isBack: boolean) => ({
-    x: isBack ? -500 : 500,
-    opacity: 0,
-    scale: 0,
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 0.5,
-    },
-  },
-  exit: (isBack: boolean) => ({
-    x: isBack ? 500 : -500,
-    opacity: 0,
-    scale: 0,
-    transition: {
-      duration: 0.5,
-    },
-  }),
-};
 function Root() {
-  const [visible, setVisible] = useState(1);
-  const [back, setBack] = useState(false);
-  const nextPlease = () => {
-    setBack(false);
-    setVisible((prev) => (prev === 10 ? (prev = 1) : prev + 1));
+  const [clicked, setClicked] = useState(false);
+  const toggleClicked = () => {
+    setClicked((prev) => !prev);
   };
-  const prevPlease = () => {
-    setBack(true);
-    setVisible((prev) => (prev === 1 ? (prev = 10) : prev - 1));
-  };
-
   return (
-    <Wrapper>
-      <AnimatePresence custom={back}>
-        <Box
-          custom={back}
-          key={visible}
-          variants={boxVar}
-          initial="entry"
-          animate="center"
-          exit="exit"
-        >
-          {visible}
-        </Box>
-      </AnimatePresence>
-      <button onClick={prevPlease}>prev</button>
-      <button onClick={nextPlease}>next</button>
+    <Wrapper onClick={toggleClicked}>
+      <Box>
+        {clicked ? (
+          <Circle layoutId="one" style={{ borderRadius: 25 }} />
+        ) : null}
+      </Box>
+      <Box>
+        {!clicked ? (
+          <Circle layoutId="one" style={{ borderRadius: 0 }} />
+        ) : null}
+      </Box>
     </Wrapper>
   );
 }
