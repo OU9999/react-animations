@@ -20,8 +20,8 @@ const Wrapper = styled(motion.div)`
 `;
 
 const Box = styled(motion.div)`
-  width: 200px;
-  height: 200px;
+  width: 50px;
+  height: 50px;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 10px;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.6);
@@ -29,47 +29,63 @@ const Box = styled(motion.div)`
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  margin-bottom: 100px;
+  font-size: 28px;
+  margin-bottom: 10px;
+  position: absolute;
+  top: 100px;
 `;
 
 const boxVar: Variants = {
-  initial: {
+  entry: (isBack: boolean) => ({
+    x: isBack ? -500 : 500,
     opacity: 0,
     scale: 0,
-  },
-  visible: {
+  }),
+  center: {
+    x: 0,
     opacity: 1,
     scale: 1,
-
     transition: {
-      type: "spring",
-      duration: 1,
+      duration: 0.5,
     },
   },
-  leaving: {
+  exit: (isBack: boolean) => ({
+    x: isBack ? 500 : -500,
     opacity: 0,
     scale: 0,
-  },
+    transition: {
+      duration: 0.5,
+    },
+  }),
 };
-
 function Root() {
-  const [showing, setShowing] = useState(false);
-  const onClick = () => {
-    setShowing((prev) => !prev);
+  const [visible, setVisible] = useState(1);
+  const [back, setBack] = useState(false);
+  const nextPlease = () => {
+    setBack(false);
+    setVisible((prev) => (prev === 10 ? (prev = 1) : prev + 1));
   };
+  const prevPlease = () => {
+    setBack(true);
+    setVisible((prev) => (prev === 1 ? (prev = 10) : prev - 1));
+  };
+
   return (
     <Wrapper>
-      <AnimatePresence>
-        {showing ? (
-          <Box
-            variants={boxVar}
-            initial="initial"
-            animate="visible"
-            exit="leaving"
-          />
-        ) : null}
+      <AnimatePresence custom={back}>
+        <Box
+          custom={back}
+          key={visible}
+          variants={boxVar}
+          initial="entry"
+          animate="center"
+          exit="exit"
+        >
+          {visible}
+        </Box>
       </AnimatePresence>
-      <button onClick={onClick}>click me!</button>
+      <button onClick={prevPlease}>prev</button>
+      <button onClick={nextPlease}>next</button>
     </Wrapper>
   );
 }
